@@ -1,0 +1,17 @@
+#menu "Version Information"
+comment "This is a secret menu for developers"
+comment "They use it once they want to increment the version"
+
+  config VERSION_MAJOR
+  string "Major Version"
+  default 0
+
+  config VERSION_MINOR
+  string "Major Version"
+  default 1
+
+  config VERSION_CODENAME
+  string "CodeName"
+  default "Lucky Lady"
+
+#endmenu
