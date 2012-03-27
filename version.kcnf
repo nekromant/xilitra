@@ -13,5 +13,8 @@ comment "They use it once they want to increment the version"
   config VERSION_CODENAME
   string "CodeName"
   default "Lucky Lady"
+  
+  config VERSION_STRING
+  string "Version string (autoupdates)"
 
 #endmenu

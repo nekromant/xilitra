@@ -1,0 +1,15 @@
+mainmenu "XiLiTRA Configuration"
+
+menu "Architecture selection"
+	source tmp/arches.kcnf
+endmenu
+
+menu "Morphlings Repositories"
+	source tmp/repo.kcnf
+endmenu
+
+menu "Version info"
+	source version.kcnf
+endmenu
+
+

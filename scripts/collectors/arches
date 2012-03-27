@@ -1,0 +1,30 @@
+#!/bin/bash
+
+rm -f $TMPDIR/arches.kcnf
+
+archinit()
+{
+cat <<EOF
+	comment "Select arches and boards to build packages against"
+EOF
+}
+
+addarch()
+{
+cat <<EOF
+	config ARCH_$2
+	bool "$1"
+	
+	if ARCH_$2
+	config test
+	endif
+	
+EOF
+}
+
+find  $SRCDIR/arch/  -type d -maxdepth 1|while read line; do
+arch=`basename $line`
+if [ "$arch" != "arch" ]; then 
+	addarch "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" >> $TMPDIR/arches.kcnf
+	fi
+done

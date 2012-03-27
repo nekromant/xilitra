@@ -7,17 +7,38 @@ PHONY+=collectinfo
 -include .config
 -include .version
 
+SRCDIR=.
+TMPDIR=tmp
+WORKDIR=work
+STAMPDIR=stamps
 
+export SRCDIR TMPDIR WORKDIR STAMPDIR
 
+include $(SRCDIR)/kconfig/kconfig.mk
+
+PHONY+=clean kconfig_clean mrproper
 CONFIG_MAKE_DEFTARGET := $(subst ",, $(CONFIG_MAKE_DEFTARGET))
 
 all: $(CONFIG_MAKE_DEFTARGET)
 	@echo "Default target $(CONFIG_MAKE_DEFTARGET) remade"
 
-include kconfig/kconfig.mk
 
-#overrride with actual version information
--include .config
--include .version
+	
+clean: kconfig_clean 
+	rm -rf $(TMPDIR)/*
+	rm -rf $(WORKDIR)/*
 
-all:
+mrproper: clean
+	find . -iname "*~"| while read line; do rm $$line; done
+	@echo "Хлебнул Ксилитры ::: Ээээх, пропёрло-то как"
+	
+	
+collectinfo:
+	mkdir -p $(TMPDIR)
+	mkdir -p $(WORKDIR)
+	mkdir -p $(STAMPDIR)
+	for file in `ls $(SRCDIR)/scripts/collectors/|grep -v "~"`; do\
+		$(SRCDIR)/scripts/collectors/$$file $(TMPDIR);\
+	done
+
+.PHONY: $(PHONY)
