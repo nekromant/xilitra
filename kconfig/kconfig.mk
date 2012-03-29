@@ -61,11 +61,11 @@ kconfig_clean:
 	-rm $(src)/zconf.tab.c* $(src)/lex.zconf.c* $(src)/zconf.hash.c*
 	
 versionupdate:
-	$(Q)$(obj)/config --set-str VERSION_MAJOR "$(VERSION_MAJOR)"
-	$(Q)$(obj)/config --set-str VERSION_MINOR "$(VERSION_MINOR)"
-	$(Q)$(obj)/config --set-str VERSION_CODENAME "$(VERSION_CODENAME)"
-	$(Q)$(obj)/config --set-str VERSION_GIT $(VERSION_GIT) 
-	$(SILENT_VER) $(obj)/config --set-str VERSION_STRING "$(VERSION_MAJOR).$(VERSION_MINOR), $(VERSION_CODENAME)"
+	$(Q)$(obj)/config --file $(KCONFIG_CONFIG) --set-str VERSION_MAJOR "$(VERSION_MAJOR)"
+	$(Q)$(obj)/config --file $(KCONFIG_CONFIG) --set-str VERSION_MINOR "$(VERSION_MINOR)"
+	$(Q)$(obj)/config --file $(KCONFIG_CONFIG) --set-str VERSION_CODENAME "$(VERSION_CODENAME)"
+	$(Q)$(obj)/config --file $(KCONFIG_CONFIG) --set-str VERSION_GIT $(VERSION_GIT) 
+	$(SILENT_VER) $(obj)/config --file $(KCONFIG_CONFIG) --set-str VERSION_STRING "$(VERSION_MAJOR).$(VERSION_MINOR), $(VERSION_CODENAME)"
 	
   
 menuconfig: $(obj)/mconf versionupdate collectinfo

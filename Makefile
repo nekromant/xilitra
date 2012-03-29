@@ -31,7 +31,9 @@ clean: kconfig_clean
 mrproper: clean
 	find . -iname "*~"| while read line; do rm $$line; done
 	@echo "Хлебнул Ксилитры ::: Ээээх, пропёрло-то как"
-	
+
+mkpkg: 
+	KCONFIG_CONFIG=tmp/pkg $(MAKE) Kconfig=./pkg.kcnf menuconfig
 	
 collectinfo:
 	mkdir -p $(TMPDIR)

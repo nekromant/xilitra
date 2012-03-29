@@ -1,0 +1,44 @@
+menu "New package info"
+
+	config PKG_NAME
+	string "Package name"
+
+	config PKG_VERSION
+	string "Package version"
+	
+	menu "Package tags"
+	
+	config TAG_DEV
+	bool "dev"
+	
+	config TAG_EMBEDDED
+	bool "dev-embedded"
+	
+	config TAG_EMBEDDED
+	bool "desktop"
+	
+	comment "TODO: Moar tags || just a field for comma separated tags"
+	endmenu
+	
+	choice 
+	prompt "Buildsystem"
+	
+	config BS_CMAKE
+	bool "Cmake"
+	
+	config BS_AUTOTOOLS
+	bool "Autotools"
+	
+	config BS_LUAROCKS
+	bool "luarocks"
+	
+	config BS_WAF
+	bool "WAF"
+	
+	endchoice
+	
+endmenu
+
+menu "Bootstrap version info (for reference)"
+	source version.kcnf
+endmenu
