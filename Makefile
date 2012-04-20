@@ -23,7 +23,6 @@ CONFIG_MAKE_DEFTARGET := $(subst ",, $(CONFIG_MAKE_DEFTARGET))
 all: $(CONFIG_MAKE_DEFTARGET)
 	@echo "Default target $(CONFIG_MAKE_DEFTARGET) remade"
 
-
 	
 clean: kconfig_clean 
 	rm -rf $(TMPDIR)/*
@@ -33,8 +32,8 @@ mrproper: clean
 	find . -iname "*~"| while read line; do rm $$line; done
 	@echo "Хлебнул Ксилитры ::: Ээээх, пропёрло-то как"
 
-mkpkg: 
-	$(MAKE) KCONFIG_CONFIG=tmp/pkg Kconfig=./pkg.kcnf menuconfig
+newpkg: 
+	KCONFIG_CONFIG=tmp/pkg $(MAKE) Kconfig=./pkg.kcnf menuconfig
 	
 cdeps=$(shell for file in `ls $(SRCDIR)/scripts/collectors/|grep -v "~"`; do\
 		SRCDIR=$(SRCDIR) TMPDIR=$(TMPDIR) $(SRCDIR)/scripts/collectors/$$file deps;\
