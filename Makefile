@@ -3,6 +3,7 @@ obj:=kconfig
 src:=kconfig
 Kconfig:=./kcnf
 KVersion:=./version.kcnf
+KCONFIG_CONFIG?=.config
 PHONY+=collectinfo
 -include .config
 -include .version
@@ -33,14 +34,21 @@ mrproper: clean
 	@echo "Хлебнул Ксилитры ::: Ээээх, пропёрло-то как"
 
 mkpkg: 
-	KCONFIG_CONFIG=tmp/pkg $(MAKE) Kconfig=./pkg.kcnf menuconfig
+	$(MAKE) KCONFIG_CONFIG=tmp/pkg Kconfig=./pkg.kcnf menuconfig
 	
-collectinfo:
+cdeps=$(shell for file in `ls $(SRCDIR)/scripts/collectors/|grep -v "~"`; do\
+		SRCDIR=$(SRCDIR) TMPDIR=$(TMPDIR) $(SRCDIR)/scripts/collectors/$$file deps;\
+	done)
+	
+collectinfo: $(TMPDIR)/.collected
+
+$(TMPDIR)/.collected: $(cdeps)
 	mkdir -p $(TMPDIR)
 	mkdir -p $(WORKDIR)
 	mkdir -p $(STAMPDIR)
 	for file in `ls $(SRCDIR)/scripts/collectors/|grep -v "~"`; do\
-		$(SRCDIR)/scripts/collectors/$$file $(TMPDIR);\
+		$(SRCDIR)/scripts/collectors/$$file;\
 	done
-
+	touch $@
+	
 .PHONY: $(PHONY)

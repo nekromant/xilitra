@@ -1,30 +1,57 @@
-#!/bin/bash
+#!/bin/bash -x
 
 rm -f $TMPDIR/arches.kcnf
 
 archinit()
 {
 cat <<EOF
-	comment "Select arches and boards to build packages against"
+	comment "Select architectures to build packages against"
+	comment "See extra menus for boards and variants"
 EOF
 }
 
 addarch()
 {
 cat <<EOF
-	config ARCH_$2
+	menuconfig ARCH_$2
 	bool "$1"
 	
 	if ARCH_$2
-	config test
+	source tmp/$1.kcnf
 	endif
 	
 EOF
 }
 
-find  $SRCDIR/arch/  -type d -maxdepth 1|while read line; do
-arch=`basename $line`
-if [ "$arch" != "arch" ]; then 
-	addarch "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" >> $TMPDIR/arches.kcnf
-	fi
+getdirs()
+{
+  find  $SRCDIR/$1/  -type d -maxdepth 1|while read line; do
+  dir=`basename $line`
+  db=`basename $1`
+  if [ "$dir" != "$db" ]; then
+    echo $dir
+  fi
+  done
+}
+
+genboards()
+{
+[ -f $SRCDIR/arch/$arch/kcnf ] && echo source arch/$arch/kcnf
+getdirs $SRCDIR/arch/$arch/|while read line; do
+  echo source arch/arm/$line/kcnf
 done
+}
+
+if [ "$1" == "deps" ]; then
+  getdirs $SRCDIR/arch/|while read arch; do
+    echo $SRCDIR/arch/$arch
+    getdirs $SRCDIR/arch/$arch/|while read l; do
+    echo $SRCDIR/arch/$arch/$l
+    done
+  done
+else
+  getdirs $SRCDIR/arch/|while read arch; do
+  addarch "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" >> $TMPDIR/arches.kcnf
+  genboards "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" > $TMPDIR/$arch.kcnf
+  done
+fi
