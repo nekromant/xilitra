@@ -6,6 +6,11 @@ menu "New package info"
 	config PKG_VERSION
 	string "Package version"
 	
+	config PKG_URL
+	string "Package tarball URL"
+		help
+		
+	
 	menu "Package tags"
 	
 	config TAG_DEV

@@ -49,5 +49,12 @@ $(TMPDIR)/.collected: $(cdeps)
 		$(SRCDIR)/scripts/collectors/$$file;\
 	done
 	touch $@
+
+build: $(TMPDIR)/.collected $(addprefix build-,$(platforms-y))
+	echo "Build iteration complete"
+
+build-%: $(TMPDIR)/.collected
+	mkdir -p $(WORKDIR)/$*
+	$(MAKE) TARGET=$* WORKDIR=$* -f Makefile.build
 	
 .PHONY: $(PHONY)

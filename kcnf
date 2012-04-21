@@ -1,10 +1,88 @@
 mainmenu "XiLiTRA Configuration"
 
+menu "Directories"
+	
+	config DLDIR
+	string "Directory to store downloads"
+	default "${SRCDIR}/dl/"
+	
+	config WORKDIR
+	string "Working directory"
+	default "${SRCDIR}/work/"
+	
+	config PKGOUTDIR
+	string "Package output directory"
+	default "${SRCDIR}/repo/"
+	
+endmenu
+
+menu "APKG/XPKG Guts"
+
+	comment "APKG is more lightweight with few deps"
+	comment "When none are selected - we'll only generate STAGING"
+	comment "A ready to use STAGING, that can be booted via NFS"
+	
+	config XPKG
+	bool "Build XPKG for host and target"
+	select META_JSON
+	
+	config APKG
+	bool "Build APKG for host and target"
+	select META_LUA
+	
+	
+	config PKG_AUTOSPLIT
+	bool "Automagically split packages to -dev -doc -dbg"
+	
+	menu "Meta formats"
+	config META_JSON
+	bool "Add JSON formatted meta to package"
+	help
+		You'd probably want to disable that for embedded. 
+		
+	config META_LUA
+	bool "Meta in LUA tables"
+	
+	config META_LUAC
+	depends on META_LUA
+	bool "Byte-compile lua metadata"
+	help
+		Put ready to use luac files as meta. That is useful for memory constrained
+		system, and speeds things up a little bit
+	endmenu
+	
+	config META_SIGN
+	bool "Sign packages with your key"
+	
+	
+	
+endmenu
+
+
+menu "WebStatus"
+	config WEBSTATUS
+	bool "Generate web pages with build status"
+	
+	config WEBSTATUS_DIR
+	string "Directory for html files"
+	default "web/"
+	
+	choice 
+	prompt "Webstatus page template"
+
+	config WEBSTATUS_TMPL_DEFAULT
+	bool "Default template"
+	
+	endchoice
+	
+endmenu
+
+
 menu "Architecture selection"
 	source tmp/arches.kcnf
 endmenu
 
-menu "Morphlings Repositories"
+menu "Repositories"
 	source tmp/repo.kcnf
 endmenu
 

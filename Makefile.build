@@ -1,0 +1,22 @@
+-include .config
+-include .version
+
+# SRCDIR=.
+# TMPDIR=tmp
+# WORKDIR=work is set one level above
+# STAMPDIR=stamps
+
+export SRCDIR TMPDIR WORKDIR STAMPDIR
+
+$(info Running build for $(TARGET))
+
+all: 
+
+copyconf:
+	cp 
+patch-ctng:
+	@echo "Patching crosstool's config file... Done!"
+
+build-crosschain:
+	@echo "Building cross-toolchain"
+

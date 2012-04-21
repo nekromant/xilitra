@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-rm -f $TMPDIR/arches.kcnf
+# 
 
 archinit()
 {
@@ -38,9 +38,18 @@ genboards()
 {
 [ -f $SRCDIR/arch/$arch/kcnf ] && echo source arch/$arch/kcnf
 getdirs $SRCDIR/arch/$arch/|while read line; do
-  echo source arch/arm/$line/kcnf
+  
+  echo "menuconfig ${arch}_${line}" > $TMPDIR/$arch.kcnf
+  echo "bool \"$line\"" >> $TMPDIR/$arch.kcnf
+  echo "if ${arch}_${line}" >> $TMPDIR/$arch.kcnf
+  echo source arch/$arch/$line/kcnf >> $TMPDIR/$arch.kcnf
+  echo "endif" >> $TMPDIR/$arch.kcnf
+  
+  echo "platforms-\$(CONFIG_${arch}_${line})+=arch/${arch}/${line}" >> $TMPDIR/targets.mk
+  
 done
 }
+
 
 if [ "$1" == "deps" ]; then
   getdirs $SRCDIR/arch/|while read arch; do
@@ -50,8 +59,10 @@ if [ "$1" == "deps" ]; then
     done
   done
 else
+  rm -f $TMPDIR/arches.kcnf $TMPDIR/targets.mk
   getdirs $SRCDIR/arch/|while read arch; do
   addarch "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" >> $TMPDIR/arches.kcnf
-  genboards "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" > $TMPDIR/$arch.kcnf
+  genboards "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" 
+#   genrules "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" > $TMPDIR/
   done
 fi
