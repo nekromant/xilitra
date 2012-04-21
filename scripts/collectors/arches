@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # 
 
@@ -39,13 +39,13 @@ genboards()
 [ -f $SRCDIR/arch/$arch/kcnf ] && echo source arch/$arch/kcnf
 getdirs $SRCDIR/arch/$arch/|while read line; do
   
-  echo "menuconfig ${arch}_${line}" > $TMPDIR/$arch.kcnf
-  echo "bool \"$line\"" >> $TMPDIR/$arch.kcnf
-  echo "if ${arch}_${line}" >> $TMPDIR/$arch.kcnf
-  echo source arch/$arch/$line/kcnf >> $TMPDIR/$arch.kcnf
-  echo "endif" >> $TMPDIR/$arch.kcnf
+  echo "menuconfig ${arch}_${line}" > $TEMPDIR/$arch.kcnf
+  echo "bool \"$line\"" >> $TEMPDIR/$arch.kcnf
+  echo "if ${arch}_${line}" >> $TEMPDIR/$arch.kcnf
+  echo source arch/$arch/$line/kcnf >> $TEMPDIR/$arch.kcnf
+  echo "endif" >> $TEMPDIR/$arch.kcnf
   
-  echo "platforms-\$(CONFIG_${arch}_${line})+=arch/${arch}/${line}" >> $TMPDIR/targets.mk
+  echo "platforms-\$(CONFIG_${arch}_${line})+=arch/${arch}/${line}" >> $TEMPDIR/targets.mk
   
 done
 }
@@ -59,10 +59,10 @@ if [ "$1" == "deps" ]; then
     done
   done
 else
-  rm -f $TMPDIR/arches.kcnf $TMPDIR/targets.mk
+  rm -f $TEMPDIR/arches.kcnf $TEMPDIR/targets.mk
   getdirs $SRCDIR/arch/|while read arch; do
-  addarch "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" >> $TMPDIR/arches.kcnf
+  addarch "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" >> $TEMPDIR/arches.kcnf
   genboards "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" 
-#   genrules "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" > $TMPDIR/
+#   genrules "$arch" "`echo $arch | tr  [:lower:] [:upper:]`" > $TEMPDIR/
   done
 fi

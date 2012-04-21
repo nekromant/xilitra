@@ -1,0 +1,11 @@
+include repo.list
+list=$(shell cat repo.list|cut -d"=" -f1)
+
+
+update: $(addprefix update-,$(list))
+
+update-%: 
+	$(eval url=$$($*))
+	[ -d repositories/$* ] || git clone $(url) repositories/$*
+	[ -d repositories/$* ] && cd repositories/$* && git pull
+

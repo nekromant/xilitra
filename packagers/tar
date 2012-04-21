@@ -1,0 +1,14 @@
+#!/bin/bash
+# A packager gets 3 things. A directory with files, a directory with meta 
+# and where to put the created file
+# It should do the voodoo and save the file
+# tar discards the meta, and just saves the tarball
+
+PKGDIR=$1
+METADIR=$2
+OUTDIR=$3
+
+echo "Merging: $1 + $2 ==> $3"
+cd $PKGDIR
+tar cvpzf $OUTDIR/tar/
+tar cvpzf $OUTDIR/tar/$PKGNAME.tar.gz 

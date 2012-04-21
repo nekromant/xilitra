@@ -1,22 +1,35 @@
+-include $(SRCDIR)/$(TARGET)/Makefile
 -include .config
 -include .version
 
 # SRCDIR=.
-# TMPDIR=tmp
+# TEMPDIR=tmp
 # WORKDIR=work is set one level above
 # STAMPDIR=stamps
 
-export SRCDIR TMPDIR WORKDIR STAMPDIR
+export SRCDIR TEMPDIR WORKDIR STAMPDIR
 
 $(info Running build for $(TARGET))
 
-all: 
+all: $(WORKDIR)/.copyconf $(WORKDIR)/.ct-patch $(WORKDIR)/.ct-build
 
-copyconf:
-	cp 
-patch-ctng:
+$(WORKDIR)/.copyconf:
+	@echo "Copying configuration files..."
+	mkdir -p $(WORKDIR)/staging
+	cp -Rfv $(SRCDIR)/$(TARGET)/* $(WORKDIR) 
+	cp -Rfv $(SRCDIR)/$(TARGET)/.config $(WORKDIR)
+	mkdir -p $(WORKDIR)/.build/
+	ln -sf `pwd`/$(DLDIR) $(WORKDIR)/.build/tarballs
+	touch $(@)
+	
+$(WORKDIR)/.ct-patch:
 	@echo "Patching crosstool's config file... Done!"
-
-build-crosschain:
+	touch $(@)
+	
+$(WORKDIR)/.ct-build:
 	@echo "Building cross-toolchain"
+	cd $(WORKDIR) && ct-ng build
+	touch $(@)
 
+
+$(WORKDIR)/.staging:

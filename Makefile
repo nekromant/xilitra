@@ -7,13 +7,15 @@ KCONFIG_CONFIG?=.config
 PHONY+=collectinfo
 -include .config
 -include .version
+-include Makefile.common
 
 SRCDIR=.
-TMPDIR=tmp
+TEMPDIR=tmp
 WORKDIR=work
 STAMPDIR=stamps
+DLDIR=$(call unquote,$(CONFIG_DLDIR))
 
-export SRCDIR TMPDIR WORKDIR STAMPDIR
+export SRCDIR TEMPDIR WORKDIR STAMPDIR DLDIR
 
 include $(SRCDIR)/kconfig/kconfig.mk
 
@@ -25,7 +27,7 @@ all: $(CONFIG_MAKE_DEFTARGET)
 
 	
 clean: kconfig_clean 
-	rm -rf $(TMPDIR)/*
+	rm -rf $(TEMPDIR)/*
 	rm -rf $(WORKDIR)/*
 
 mrproper: clean
@@ -36,13 +38,13 @@ newpkg:
 	KCONFIG_CONFIG=tmp/pkg $(MAKE) Kconfig=./pkg.kcnf menuconfig
 	
 cdeps=$(shell for file in `ls $(SRCDIR)/scripts/collectors/|grep -v "~"`; do\
-		SRCDIR=$(SRCDIR) TMPDIR=$(TMPDIR) $(SRCDIR)/scripts/collectors/$$file deps;\
+		SRCDIR=$(SRCDIR) TEMPDIR=$(TEMPDIR) $(SRCDIR)/scripts/collectors/$$file deps;\
 	done)
 	
-collectinfo: $(TMPDIR)/.collected
+collectinfo: $(TEMPDIR)/.collected
 
-$(TMPDIR)/.collected: $(cdeps)
-	mkdir -p $(TMPDIR)
+$(TEMPDIR)/.collected: $(cdeps)
+	mkdir -p $(TEMPDIR)
 	mkdir -p $(WORKDIR)
 	mkdir -p $(STAMPDIR)
 	for file in `ls $(SRCDIR)/scripts/collectors/|grep -v "~"`; do\
@@ -50,11 +52,16 @@ $(TMPDIR)/.collected: $(cdeps)
 	done
 	touch $@
 
-build: $(TMPDIR)/.collected $(addprefix build-,$(platforms-y))
-	echo "Build iteration complete"
 
-build-%: $(TMPDIR)/.collected
-	mkdir -p $(WORKDIR)/$*
-	$(MAKE) TARGET=$* WORKDIR=$* -f Makefile.build
+include $(TEMPDIR)/targets.mk
+
+build: $(TEMPDIR)/.collected
+	$(info $(platforms-y))
+	$(foreach target, $(platforms-y),\
+	mkdir -p $(WORKDIR)/$(target);\
+	$(MAKE) DLDIR=$(DLDIR) TARGET=$(target) WORKDIR=$(WORKDIR)/$(target) -f $(SRCDIR)/Makefile.build; )
+
+build-%: $(TEMPDIR)/.collected
+	
 	
 .PHONY: $(PHONY)
