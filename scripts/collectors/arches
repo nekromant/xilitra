@@ -25,7 +25,7 @@ EOF
 
 getdirs()
 {
-  find  $SRCDIR/$1/  -type d -maxdepth 1|while read line; do
+  find  $SRCDIR/$1/  -maxdepth 1 -type d|while read line; do
   dir=`basename $line`
   db=`basename $1`
   if [ "$dir" != "$db" ]; then
