@@ -28,7 +28,7 @@ $(WORKDIR)/.ct-patch:
 	
 $(WORKDIR)/.ct-build:
 	@echo "Building cross-toolchain"
-	cd $(WORKDIR) && ct-ng build
+	cd $(WORKDIR) && ct-ng oldconfig && ct-ng build
 	touch $(@)
 
 
