@@ -53,7 +53,7 @@ $(TEMPDIR)/.collected: $(cdeps)
 	touch $@
 
 
-include $(TEMPDIR)/targets.mk
+-include $(TEMPDIR)/targets.mk
 
 build: $(TEMPDIR)/.collected
 	$(info $(platforms-y))
