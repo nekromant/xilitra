@@ -31,9 +31,6 @@ menu "APKG/XPKG Guts"
 	select META_LUA
 	
 	
-	config PKG_AUTOSPLIT
-	bool "Automagically split packages to -dev -doc -dbg"
-	
 	menu "Meta formats"
 	config META_JSON
 	bool "Add JSON formatted meta to package"

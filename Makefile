@@ -19,7 +19,7 @@ export SRCDIR TEMPDIR WORKDIR STAMPDIR DLDIR
 
 include $(SRCDIR)/kconfig/kconfig.mk
 
-PHONY+=clean kconfig_clean mrproper
+PHONY+=clean kconfig_clean mrproper collectinfo
 CONFIG_MAKE_DEFTARGET := $(subst ",, $(CONFIG_MAKE_DEFTARGET))
 
 all: $(CONFIG_MAKE_DEFTARGET)
@@ -28,6 +28,7 @@ all: $(CONFIG_MAKE_DEFTARGET)
 	
 clean: kconfig_clean 
 	rm -rf $(TEMPDIR)/*
+	rm -rf $(TEMPDIR)/.*
 	rm -rf $(WORKDIR)/*
 
 mrproper: clean
@@ -47,6 +48,7 @@ $(TEMPDIR)/.collected: $(cdeps)
 	mkdir -p $(TEMPDIR)
 	mkdir -p $(WORKDIR)
 	mkdir -p $(STAMPDIR)
+	mkdir -p $(DLDIR)
 	for file in `ls $(SRCDIR)/scripts/collectors/|grep -v "~"`; do\
 		$(SRCDIR)/scripts/collectors/$$file;\
 	done

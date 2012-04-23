@@ -11,7 +11,7 @@ export SRCDIR TEMPDIR WORKDIR STAMPDIR
 
 $(info Running build for $(TARGET))
 
-all: $(WORKDIR)/.copyconf $(WORKDIR)/.ct-patch $(WORKDIR)/.ct-build
+all: $(WORKDIR)/.copyconf $(WORKDIR)/.ct-patch $(WORKDIR)/.ct-build $(WORKDIR)/.libc_copy $(WORKDIR)/.libc_pack
 
 $(WORKDIR)/.copyconf:
 	@echo "Copying configuration files..."
@@ -30,6 +30,22 @@ $(WORKDIR)/.ct-build:
 	@echo "Building cross-toolchain"
 	cd $(WORKDIR) && ct-ng oldconfig && ct-ng build
 	touch $(@)
+	
+$(WORKDIR)/.libc_copy:
+	@echo "Packaging libc files..."
+	-rm -Rf $(WORKDIR)/pkg
+	mkdir -p $(WORKDIR)/pkg/libc/data/$(EXTRA_PREFIX)/
+	cp -Rf $(SRCDIR)/$(TARGET)/libc_meta $(WORKDIR)/pkg/libc/meta
+	cp -Rf $(WORKDIR)/toolchain/$(CROSS_COMPILE)/sysroot/* $(WORKDIR)/pkg/libc/data/$(EXTRA_PREFIX)/
 
-
+$(WORKDIR)/.libc_pack:
+	#TODO: Write extra meta for libc here
+	DATADIR=$(WORKDIR)/pkg/libc/data \
+	METADIR=$(WORKDIR)/pkg/libc/meta \
+	WORKDIR=$(WORKDIR) \
+		$(SRCDIR)/scripts/mkpkg	
+	
+	
 $(WORKDIR)/.staging:
+	@echo "Injecting"
+	

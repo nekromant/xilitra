@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Antares version: VERSION_STRING
-# Tue Mar 27 19:32:32 2012
+# Xilitra version: 
+# Mon Apr 23 23:49:13 2012
 #
 
 #
@@ -14,3 +14,4 @@
 CONFIG_VERSION_MAJOR="0"
 CONFIG_VERSION_MINOR="1"
 CONFIG_VERSION_CODENAME="The Dead Mascot"
+CONFIG_VERSION_STRING=""

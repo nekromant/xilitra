@@ -1,0 +1,11 @@
+#!/bin/bash
+#META - dir with prepared meta
+#DATA - dir with data
+#WORKDIR
+pkg=$1
+echo "Generating package (simple)"
+#TODO: We need piping here to save some space
+fakeroot tar cJf $WORKDIR/data.tar.xz -C $DATADIR .
+fakeroot tar cJf $WORKDIR/meta.tar.xz -C $METADIR .
+echo "Done"
+# fakeroot tar cJf $WORKDIR/pkg.tar.xz meta.tar.xz data.tar.xz
